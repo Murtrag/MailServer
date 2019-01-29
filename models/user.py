@@ -80,6 +80,12 @@ class User:
             ret.append(loaded_user)
         return ret
 
+    @staticmethod
+    def load_users_by_any(cursor, **kwargs):
+        all_users = User.load_all_users(cursor)
+        return [user for user in all_users if getattr(user,list(kwargs.keys())[0]) == list(kwargs.values())[0]]
+
+
     def delete(self, cursor):
         sql = "DELETE FROM users WHERE id=%s"
         cursor.execute(sql, (self.__id,))
