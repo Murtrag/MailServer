@@ -13,6 +13,9 @@ if __name__ == '__main__':
     pairs = clcrypto.slice_args(sys.argv)
     user = User()
     if len(set(("-u", "-p", "-l")) & set(pairs)) == 3:
+        ''' print all messages of user'''
+        # python3 message.py -u franek12 -p tajne1234 -l
+
         hash_u = user.load_users_by_any(cursor, username = pairs['-u'])[0].hashed_password
         if clcrypto.check_password(pairs['-p'], hash_u):
             for message in Message.load_received_messages(cursor, pairs["-u"]+"@test.pl"):
@@ -25,6 +28,8 @@ if __name__ == '__main__':
 
 
     elif len(set(("-u", "-p", "-t", "-s")) & set(pairs)) == 4:
+        ''' send message to user '''
+        # python3 message.py -u franek12 -p tajne1234 -t inny_user@test.pl -s 'temat123::wiadomosc testowa'
         hash_u = user.load_users_by_any(cursor, username=pairs['-u'])[0].hashed_password
         if clcrypto.check_password(pairs['-p'], hash_u):
             if user.load_users_by_any(cursor, email=pairs['-t']):

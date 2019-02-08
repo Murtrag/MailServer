@@ -14,6 +14,7 @@ if __name__ == '__main__':
 
     if len(set(("-u","-p")) & set(pairs)) == 2 and len(set(("-e","-d")) & set(pairs)) < 1:
         ''' create user'''
+        # python3 main.py -u franek12 -p tajne123
         if User.load_users_by_any(cursor, username=pairs['-u']):
             print("błąd: Taki użytkownik już istnieje ;(")
         elif clcrypto.check_pass_len(pairs['-p']):
@@ -27,6 +28,7 @@ if __name__ == '__main__':
             print("Podane hasło zbyt krótkie")
     elif len(set(("-u","-p", "-e", "-n")) & set(pairs)) == 4:
         ''' change password'''
+        # python3 main.py -u franek12 -p tajne123 -e -n tajne1234
         get_user =  User.load_users_by_any(cursor, username=pairs['-u'])[0]
         if get_user:
             if clcrypto.check_password(pairs['-p'], get_user.hashed_password):
@@ -39,6 +41,8 @@ if __name__ == '__main__':
             else:
                 print("podsałeś błędne hasło")
     elif len(set(("-u", "-p", "-d")) & set(pairs)) == 3:
+        '''remove user from db'''
+        # python3 main.py -u franek12 -p tajne1234 -d
         try:
             get_user = User.load_users_by_any(cursor, username=pairs['-u'])[0]
         except IndexError:
@@ -52,6 +56,8 @@ if __name__ == '__main__':
                 print("błędne hasło")
 
     elif set(("-l",)) == set(pairs):
+        ''' print all users '''
+        # python3 main.py -l
         users = User().load_all_users(cursor)
         print("\n".join([x.username for x in users]))
     else:
