@@ -1,6 +1,7 @@
 import hashlib
 import random
 import string
+import re
 
 """
 ALPHABET is a global variable, that keeps all uppercase letter, all lowercase
@@ -78,3 +79,19 @@ def check_password(pass_to_check, hashed):
         return True
     else:
         return False
+def check_pass_len(pass_to_check):
+    """check if password has more than 8 chars """
+    return len(pass_to_check)>=8
+
+def slice_args(args):
+    pairs = {}
+    for pair_item in args:
+        if "-" in pair_item:
+            f_pair_item = pair_item if not "--" in pair_item else pair_item[1:3]
+            try:
+                pairs[f_pair_item] = args[args.index(pair_item)+1 : args.index(pair_item)+2][0]
+                if re.match('-{1,2}[a-z]+', pairs[f_pair_item]):
+                    pairs[f_pair_item] = None
+            except IndexError:
+                pairs[f_pair_item] = None
+    return pairs
