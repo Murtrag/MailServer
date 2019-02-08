@@ -12,12 +12,17 @@
 # message TEXT NOT NULL,
 # sender VARCHAR(255) NOT NULL,
 # receiver VARCHAR(255) NOT NULL,
+# creation_date timestamp,
 # PRIMARY KEY (id),
 # FOREIGN KEY(sender) REFERENCES users(email),
 # FOREIGN KEY(receiver) REFERENCES users(email)
 # );
 
 #insert into messages(title, message, sender, receiver) values('testowa','tralala', 'Janek123@test.pl', 'Januszek@test.pl');
+
+
+
+
 
 class Message:
     __id = None
@@ -45,7 +50,7 @@ class Message:
             return True
     @staticmethod
     def load_received_messages(cursor, receiver):
-        sql = """SELECT id, sender, title, message FROM messages where receiver=%s ORDER BY id;"""
+        sql = """SELECT id, sender, title, message FROM messages where receiver=%s ORDER BY creation_date;"""
 
         cursor.execute(sql, (receiver,))
         ret = []

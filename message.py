@@ -40,6 +40,8 @@ if __name__ == '__main__':
                     print("Brak wiadomości?")
             else:
                 print("podany adresat nie instnieje")
+        else:
+            print("Podano błędne hasło")
 
     else:
         print("komunikat pomocy")
