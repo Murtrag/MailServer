@@ -49,8 +49,12 @@ if __name__ == '__main__':
             print("Podany user nie istnieje")
             get_user = False
         if get_user:
+
             if clcrypto.check_password(pairs['-p'], get_user.hashed_password):
-                get_user.delete(cursor)
+                try:
+                    get_user.delete(cursor)
+                except Exception:  # psycopg2.IntegrityError
+                    print("user nie może być usunięty, poniewaz istnieja wiadomosci do niego przypisane")
                 print("usunięto usera z bazy")
             else:
                 print("błędne hasło")
