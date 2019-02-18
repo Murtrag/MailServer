@@ -25,11 +25,6 @@
 
 
 class Message:
-    __id = None
-    title = None
-    message = None
-    sender = None
-    receiver = None
     def __init__(self):
         self.__id = -1
         self.title = ""
