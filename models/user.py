@@ -15,11 +15,6 @@ from clcrypto import password_hash
 
 
 class User:
-    __id = None
-    username = None
-    __hashed_password = None
-    email = None
-
     def __init__(self):
         self.__id = -1
         self.email = ""
