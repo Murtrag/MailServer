@@ -47,7 +47,7 @@ if __name__ == '__main__':
             get_user = User.load_users_by_any(cursor, username=pairs['-u'])[0]
         except IndexError:
             print("Podany user nie istnieje")
-            get_user = False
+            exit(1)
         if get_user:
 
             if clcrypto.check_password(pairs['-p'], get_user.hashed_password):

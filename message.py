@@ -9,8 +9,11 @@ if __name__ == '__main__':
     connection = get_connection()
     cursor = get_cursor(connection)
 
-
-    pairs = clcrypto.slice_args(sys.argv)
+    try:
+        pairs = clcrypto.slice_args(sys.argv)
+    except KeyError as e:
+        print(e)
+        exit(1)
     user = User()
     if len(set(("-u", "-p", "-l")) & set(pairs)) == 3:
         ''' print all messages of user'''

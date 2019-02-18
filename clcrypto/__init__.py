@@ -84,6 +84,7 @@ def check_pass_len(pass_to_check):
     return len(pass_to_check)>=8
 
 def slice_args(args):
+    #puendlts
     pairs = {}
     for pair_item in args:
         if "-" in pair_item:
@@ -94,4 +95,6 @@ def slice_args(args):
                     pairs[f_pair_item] = None
             except IndexError:
                 pairs[f_pair_item] = None
+    if set([arg.strip('-') for arg in pairs]) - set("puendlts"):
+        raise KeyError("Podany parametr jest zabroniony")
     return pairs
