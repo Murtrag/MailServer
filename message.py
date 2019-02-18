@@ -15,17 +15,21 @@ if __name__ == '__main__':
     if len(set(("-u", "-p", "-l")) & set(pairs)) == 3:
         ''' print all messages of user'''
         # python3 message.py -u franek12 -p tajne1234 -l
+        try:
+            hash_u = user.load_users_by_any(cursor, username = pairs['-u'])[0].hashed_password
 
-        hash_u = user.load_users_by_any(cursor, username = pairs['-u'])[0].hashed_password
-        if clcrypto.check_password(pairs['-p'], hash_u):
-            for message in Message.load_received_messages(cursor, pairs["-u"]+"@test.pl"):
-                print("od: ", message.sender)
-                print("temat: ", message.title)
-                print("treść: ", message.message)
-                print("-----------------------------\n\n")
-        else:
-            print("Podano błędne haslo")
 
+            if clcrypto.check_password(pairs['-p'], hash_u):
+                for message in Message.load_received_messages(cursor, pairs["-u"]+"@test.pl"):
+                    print("od: ", message.sender)
+                    print("temat: ", message.title)
+                    print("treść: ", message.message)
+                    print("-----------------------------\n\n")
+            else:
+                print("Podano błędne haslo")
+
+        except IndexError:
+            print("Podany user nie istnieje")
 
     elif len(set(("-u", "-p", "-t", "-s")) & set(pairs)) == 4:
         ''' send message to user '''
