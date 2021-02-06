@@ -4,7 +4,6 @@ from configparser import ConfigParser
 import os
 parser = ConfigParser()
 parser.read('database/config.ini')
-# print(parser.sections())
 user = parser['db']['username']
 password = parser['db']['password']
 db_name = parser['db']['name']
