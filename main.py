@@ -65,6 +65,14 @@ if __name__ == '__main__':
         users = User().load_all_users(cursor)
         print("\n".join([x.username for x in users]))
     else:
-        print("komunikat pomocy")
+        print("komunikat pomocy \n")
+        print("     -l  Wyświetl wszystkich dostępnych używkowników \n")
+        print("     -u & -p  Utwurz nowego użytkownika e.g.")
+        print("     python3 main.py -u franek12 -p tajne123 \n\n")
+        print("     -u & -p & -e & -n Zmień hasło użytkownikowi e.g.")
+        print("     python3 main.py -u franek12 -p tajne123 -e -n tajne1234\n\n")
+        print("     -u & -p & -d Usuń użytkownika z bazy danych")
+        print("     python3 main.py -u franek12 -p tajne1234 -d")
+        
 
     connection.close()

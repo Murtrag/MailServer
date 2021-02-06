@@ -1,10 +1,11 @@
 import os
+from database import user, password, db_name
 
 current_file = os.path.realpath(__file__)
 script_dir = os.path.dirname(current_file)
-user = input("Podaj nazwę urzytkownika dostępu do psql: ")
-password = input("Podaj hasło usera {} do psql: ".format(user))
-db_name = input("Podaj nazwę bazy danych jaką chcesz utworzyć dla programu")
+# user = input("Podaj nazwę urzytkownika dostępu do psql: ")
+# password = input("Podaj hasło usera {} do psql: ".format(user))
+# db_name = input("Podaj nazwę bazy danych jaką chcesz utworzyć dla programu: ")
 
 print("1. Przechodze do katalogu\n [#     ] ")
 os.chdir(script_dir)
@@ -14,7 +15,7 @@ print("3. Instalacja zależności\n [##   ] ")
 os.system("pip3 install -r requirements.txt")
 print("4. Tworzenie bazy danych\n [###  ] ")
 import psycopg2
-con = psycopg2.connect(user=user, password=password, host='localhost')
+con = psycopg2.connect(user=user, password=password, host='db')
 con.autocommit = True
 cur = con.cursor()
 try:
@@ -24,7 +25,7 @@ except Exception:
 cur.execute('CREATE DATABASE {};'.format(db_name))
 con.close()
 print("5. Tworzenie tabelek w bazie\n [##### ] ")
-con = psycopg2.connect(user=user,password=password, dbname=db_name, host='localhost')
+con = psycopg2.connect(user=user,password=password, dbname=db_name, host='db')
 con.autocommit = True
 cur = con.cursor()
 cur.execute("""

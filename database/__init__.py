@@ -8,10 +8,12 @@ parser.read('database/config.ini')
 user = parser['db']['username']
 password = parser['db']['password']
 db_name = parser['db']['name']
+server_name = parser['db']['server']
+domain_name = parser['db']['domain']
 
 def get_connection():
     try:
-        cnx = connect(user=user, password=password, host="127.0.0.1", database=db_name)
+        cnx = connect(user=user, password=password, host=server_name, database=db_name)
         cnx.autocommit = True
         return cnx
     except OperationalError as error:

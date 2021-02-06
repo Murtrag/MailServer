@@ -1,6 +1,6 @@
 from models import Message
 from models import User
-from database import get_connection, get_cursor
+from database import get_connection, get_cursor, domain_name
 import sys
 sys.path.append("..")
 import clcrypto
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
 
             if clcrypto.check_password(pairs['-p'], hash_u):
-                for message in Message.load_received_messages(cursor, pairs["-u"]+"@test.pl"):
+                for message in Message.load_received_messages(cursor, f"{pairs['-u']}@{domain_name}"):
                     print("od: ", message.sender)
                     print("temat: ", message.title)
                     print("treść: ", message.message)
@@ -57,5 +57,8 @@ if __name__ == '__main__':
 
     else:
         print("komunikat pomocy")
+        print("-u -p -l Wyświetl wszystkie wiadomości otrzymane przez użytkownika e.g.")
+        print("     python3 message.py -u franek12 -p tajne123 -l \n\n")
 
-
+        print("-u -p -t -s Wyślij wiadomość do innego użytkownika")
+        print(" python3 message.py -u franek12 -p tajne1234 -t inny_user@test.pl -s 'temat123::wiadomosc testowa \n\n'")
