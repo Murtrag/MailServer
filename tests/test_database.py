@@ -1,6 +1,8 @@
 from database import (get_connection, get_cursor,
  domain_name, user, password, db_name, server_name, domain_name)
 import pytest
+# from .fixtures import db_connection
+# from fixtures import db_connection
 
 
 @pytest.mark.connection
@@ -19,12 +21,12 @@ def test_variables():
 	assert len(domain_name) > 2 
 
 @pytest.mark.connection
-def test_get_connection():
-	assert get_connection().status == 1
+def test_get_connection(db_connection):
+	assert db_connection.status == 1
 
 @pytest.mark.connection
-def test_get_cursor():
-	cursor = get_cursor(get_connection())
+def test_get_cursor(db_connection):
+	cursor = get_cursor(db_connection)
 	sql = """SELECT id, sender, title, message FROM messages where receiver=%s ORDER BY creation_date;"""
 	cursor.execute(sql, (f"test@{domain_name}",))
 	assert len(cursor.fetchall()) == 0 # @TODO Create fixture & inc this number 

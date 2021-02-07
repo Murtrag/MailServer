@@ -82,6 +82,11 @@ class User:
 
 
     def delete(self, cursor):
+        sql = "SELECT email FROM users WHERE id=%s"
+        cursor.execute(sql, (self.__id,))
+        email = cursor.fetchone()['email']
+        sql = "DELETE FROM messages WHERE sender=%s OR receiver=%s"
+        cursor.execute(sql, (email, email))
         sql = "DELETE FROM users WHERE id=%s"
         cursor.execute(sql, (self.__id,))
         self.__id = -1
