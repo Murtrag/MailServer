@@ -1,26 +1,3 @@
-# CREATE TABLE users (
-#   id serial NOT NULL,
-#   username VARCHAR(255) NOT NULL,
-#   email VARCHAR(255) UNIQUE NOT NULL,
-#   hashed_password VARCHAR(255) NOT NULL,
-#   PRIMARY KEY (id)
-# );
-
-# CREATE TABLE messages (
-# id serial NOT NULL,
-# title VARCHAR(255) NOT NULL,
-# message TEXT NOT NULL,
-# sender VARCHAR(255) NOT NULL,
-# receiver VARCHAR(255) NOT NULL,
-# creation_date timestamp,
-# PRIMARY KEY (id),
-# FOREIGN KEY(sender) REFERENCES users(email),
-# FOREIGN KEY(receiver) REFERENCES users(email)
-# );
-
-# insert into messages(title, message, sender, receiver) values('testowa','tralala', 'Janek123@test.pl', 'Januszek@test.pl');
-
-
 class Message:
     def __init__(self):
         self.__id = -1
