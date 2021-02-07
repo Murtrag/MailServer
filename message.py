@@ -16,11 +16,11 @@ def get_messages(username, password):
     try:
         hash_u = user.filter(cursor, username=username)[0].hashed_password
     except IndexError:
-        print("Podany user nie istnieje")
+        print("User doas not exist.")
         return None
 
     if clcrypto.check_password(password, hash_u) is False:
-        print("Podano błędne haslo")
+        print("This password is incorrect.")
         return None
     return Message.load_received_messages(cursor, f"{username}@{domain_name}")
 
@@ -29,11 +29,11 @@ def send_message(username, password, receiver, t_message):
     try:
         hash_u = user.filter(cursor, username=username)[0].hashed_password
     except IndexError:
-        print("Podany user nie istnieje")
+        print("User doas not exist.")
         return None
 
     if clcrypto.check_password(password, hash_u) is False:
-        print("Podano błędne hasło")
+        print("This password is incorrect.")
         return None
 
     if user.filter(cursor, email=receiver) == []:
@@ -41,7 +41,7 @@ def send_message(username, password, receiver, t_message):
         return None
 
     if bool(t_message) is False:
-        print("Brak wiadomości?")
+        print("The flag -s is empty but should privide a text message.")
         return None
 
     message = Message()
@@ -55,7 +55,7 @@ def send_message(username, password, receiver, t_message):
     message.sender = user.filter(cursor, username=username)[0].email
     message.receiver = receiver
     message.save_to_db(cursor)
-    print("Wiadomość wysłana")
+    print("The messages has been sent.")
 
 
 if __name__ == "__main__":
@@ -71,9 +71,9 @@ if __name__ == "__main__":
         username = pairs["-u"]
         password = pairs["-p"]
         for message in get_messages(username, password):
-            print("od: ", message.sender)
-            print("temat: ", message.title)
-            print("treść: ", message.message)
+            print("From: ", message.sender)
+            print("Topic: ", message.title)
+            print("Message: ", message.message)
             print("-----------------------------\n\n")
 
     elif all(param in pairs_keys for param in ("-u", "-p", "-t", "-s")):
@@ -86,11 +86,12 @@ if __name__ == "__main__":
         send_message(username, password, receiver, message)
 
     else:
-        print("komunikat pomocy")
-        print("-u -p -l Wyświetl wszystkie wiadomości otrzymane przez użytkownika e.g.")
+        print("Help message: \n")
+
+        print("-u -p -l Display all user's messages e.g.")
         print("     python3 message.py -u franek12 -p tajne123 -l \n\n")
 
-        print("-u -p -t -s Wyślij wiadomość do innego użytkownika")
+        print("-u -p -t -s Send message to another user.")
         print(
-            " python3 message.py -u franek12 -p tajne1234 -t inny_user@test.pl -s 'temat123::wiadomosc testowa \n\n'"
+            " python3 message.py -u franek12 -p tajne1234 -t inny_user@test.pl -s 'temat123::test message \n\n'"
         )

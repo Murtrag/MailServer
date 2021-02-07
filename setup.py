@@ -15,14 +15,15 @@ script_dir = os.path.dirname(current_file)
 # password = input("Podaj hasło usera {} do psql: ".format(user))
 # db_name = input("Podaj nazwę bazy danych jaką chcesz utworzyć dla programu: ")
 
-print("1. Przechodze do katalogu\n [#     ] ")
+# print("1. Przechodze do katalogu\n [#     ] ")
+print("1. Going to catalogue [#     ] \n")
 os.chdir(script_dir)
 # print("2. Tworzenie venv\n [##    ] ")
 # os.system("virtualenv -p python3 env")
 # os.system("source /env/bin/activate")
-print("3. Instalacja zależności\n [##   ] ")
+print("3. Installing dependiences \n [##   ] ")
 os.system("pip3 install -r requirements.txt")
-print("4. Tworzenie bazy danych\n [###  ] ")
+print("4. Creating database \n [###  ] ")
 
 con = psycopg2.connect(user=username, password=password, host=db_server)
 con.autocommit = True
@@ -33,7 +34,7 @@ except Exception:
     pass
 cur.execute("CREATE DATABASE {};".format(db_name))
 con.close()
-print("5. Tworzenie tabelek w bazie\n [##### ] ")
+print("5. Creating tabes in database \n [##### ] ")
 con = psycopg2.connect(user=username, password=password, dbname=db_name, host=db_server)
 con.autocommit = True
 cur = con.cursor()
@@ -66,7 +67,8 @@ FOREIGN KEY(receiver) REFERENCES users(email)
 """
 )
 con.close()
-print("6. Finalizacja instalacji\n [######] ")
+# print("6. Finalizacja instalacji\n [######] ")
+print("6. Finalizing instalation \n [######] ")
 os.chdir("database")
 
 config = ConfigParser()
@@ -80,4 +82,4 @@ config["db"] = {
 
 with open("config.ini", "w") as file:
     config.write(file)
-print("---------------------\nINSTALACJA ZAKOŃCZONA POWODZENIEM! \\o/")
+print("---------------------\n INSTALATION WENT SUCCESSFULLY \\o/")
