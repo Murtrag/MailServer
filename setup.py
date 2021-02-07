@@ -1,4 +1,7 @@
 import os
+import psycopg2
+
+from configparser import ConfigParser
 from database import user, password, db_name
 
 current_file = os.path.realpath(__file__)
@@ -14,21 +17,22 @@ os.system("virtualenv -p python3 env")
 print("3. Instalacja zależności\n [##   ] ")
 os.system("pip3 install -r requirements.txt")
 print("4. Tworzenie bazy danych\n [###  ] ")
-import psycopg2
-con = psycopg2.connect(user=user, password=password, host='db')
+
+con = psycopg2.connect(user=user, password=password, host="db")
 con.autocommit = True
 cur = con.cursor()
 try:
-    cur.execute('DROP DATABASE {};'.format(db_name))
+    cur.execute("DROP DATABASE {};".format(db_name))
 except Exception:
     pass
-cur.execute('CREATE DATABASE {};'.format(db_name))
+cur.execute("CREATE DATABASE {};".format(db_name))
 con.close()
 print("5. Tworzenie tabelek w bazie\n [##### ] ")
-con = psycopg2.connect(user=user,password=password, dbname=db_name, host='db')
+con = psycopg2.connect(user=user, password=password, dbname=db_name, host="db")
 con.autocommit = True
 cur = con.cursor()
-cur.execute("""
+cur.execute(
+    """
 CREATE TABLE users (
   id serial NOT NULL,
   username VARCHAR(255) NOT NULL,
@@ -36,10 +40,12 @@ CREATE TABLE users (
   hashed_password VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
-""")
+"""
+)
 
 
-cur.execute("""
+cur.execute(
+    """
 CREATE TABLE messages (
 id serial NOT NULL,
 title VARCHAR(255) NOT NULL,
@@ -51,11 +57,12 @@ PRIMARY KEY (id),
 FOREIGN KEY(sender) REFERENCES users(email),
 FOREIGN KEY(receiver) REFERENCES users(email)
 );
-""")
+"""
+)
 con.close()
 print("6. Finalizacja instalacji\n [######] ")
 os.chdir("database")
-from configparser import ConfigParser
+
 config = ConfigParser()
 config["db"] = {
     "username": user,
@@ -64,4 +71,4 @@ config["db"] = {
 }
 with open("config.ini", "w") as file:
     config.write(file)
-print("---------------------\nINSTALACJA ZAKOŃCZONA POWODZENIEM! \o/")
+print("---------------------\nINSTALACJA ZAKOŃCZONA POWODZENIEM! \\o/")

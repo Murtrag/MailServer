@@ -1,7 +1,7 @@
-import hashlib
+import re
 import random
 import string
-import re
+import hashlib
 
 """
 ALPHABET is a global variable, that keeps all uppercase letter, all lowercase
@@ -37,7 +37,7 @@ def password_hash(password, salt=None):
 
     # fill to 16 chars if too short
     if len(salt) < 16:
-        salt += ("a" * (16 - len(salt)))
+        salt += "a" * (16 - len(salt))
 
     # cut to 16 if too long
     if len(salt) > 16:
@@ -48,7 +48,7 @@ def password_hash(password, salt=None):
 
     # we have to encode salt & password to utf-8, this is required by the
     # hashlib library.
-    t_sha.update(salt.encode('utf-8') + password.encode('utf-8'))
+    t_sha.update(salt.encode("utf-8") + password.encode("utf-8"))
 
     # return salt & hash joined
     return salt + t_sha.hexdigest()
@@ -79,22 +79,27 @@ def check_password(pass_to_check, hashed):
         return True
     else:
         return False
+
+
 def check_pass_len(pass_to_check):
     """check if password has more than 8 chars """
-    return len(pass_to_check)>=8
+    return len(pass_to_check) >= 8
+
 
 def slice_args(args):
-    #puendlts
+    # puendlts
     pairs = {}
     for pair_item in args:
         if "-" in pair_item:
-            f_pair_item = pair_item if not "--" in pair_item else pair_item[1:3]
+            f_pair_item = pair_item if "--" not in pair_item else pair_item[1:3]
             try:
-                pairs[f_pair_item] = args[args.index(pair_item)+1 : args.index(pair_item)+2][0]
-                if re.match('-{1,2}[a-z]+', pairs[f_pair_item]):
+                pairs[f_pair_item] = args[
+                    args.index(pair_item) + 1 : args.index(pair_item) + 2
+                ][0]
+                if re.match("-{1,2}[a-z]+", pairs[f_pair_item]):
                     pairs[f_pair_item] = None
             except IndexError:
                 pairs[f_pair_item] = None
-    if set([arg.strip('-') for arg in pairs]) - set("puendlts"):
+    if set([arg.strip("-") for arg in pairs]) - set("puendlts"):
         raise KeyError("Podany parametr jest zabroniony")
     return pairs

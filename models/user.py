@@ -1,17 +1,6 @@
 import sys
 
-sys.path.append("..")
-
 from clcrypto import password_hash
-
-
-# CREATE TABLE users (
-#   id serial NOT NULL,
-#   username VARCHAR(255) NOT NULL,
-#   email VARCHAR(255) UNIQUE NOT NULL,
-#   hashed_password VARCHAR(255) NOT NULL,
-#   PRIMARY KEY (id)
-# );
 
 
 class User:
@@ -29,7 +18,7 @@ class User:
     def hashed_password(self):
         return self.__hashed_password
 
-    def set_password(self, password, salt=''):
+    def set_password(self, password, salt=""):
         self.__hashed_password = password_hash(password, salt)
 
     def save_to_db(self, cursor):
@@ -38,7 +27,7 @@ class User:
                      VALUES(%s, %s, %s) RETURNING id"""
             values = (self.username, self.email, self.hashed_password)
             cursor.execute(sql, values)
-            self.__id = cursor.fetchone()['id']
+            self.__id = cursor.fetchone()["id"]
             return True
         else:
             sql = """UPDATE users SET username=%s, email=%s, hashed_password=%s WHERE id=%s"""
@@ -53,10 +42,10 @@ class User:
         data = cursor.fetchone()
         if data:
             loaded_user = User()
-            loaded_user.__id = data['id']
-            loaded_user.username = data['username']
-            loaded_user.email = data['email']
-            loaded_user.__hashed_password = data['hashed_password']
+            loaded_user.__id = data["id"]
+            loaded_user.username = data["username"]
+            loaded_user.email = data["email"]
+            loaded_user.__hashed_password = data["hashed_password"]
             return loaded_user
         else:
             return None
@@ -68,23 +57,26 @@ class User:
         ret = []
         for user in cursor.fetchall():
             loaded_user = User()
-            loaded_user.__id = user['id']
-            loaded_user.username = user['username']
-            loaded_user.__hashed_password = user['hashed_password']
-            loaded_user.email = user['email']
+            loaded_user.__id = user["id"]
+            loaded_user.username = user["username"]
+            loaded_user.__hashed_password = user["hashed_password"]
+            loaded_user.email = user["email"]
             ret.append(loaded_user)
         return ret
 
     @staticmethod
     def load_users_by_any(cursor, **kwargs):
         all_users = User.load_all_users(cursor)
-        return [user for user in all_users if getattr(user,list(kwargs.keys())[0]) == list(kwargs.values())[0]]
-
+        return [
+            user
+            for user in all_users
+            if getattr(user, list(kwargs.keys())[0]) == list(kwargs.values())[0]
+        ]
 
     def delete(self, cursor):
         sql = "SELECT email FROM users WHERE id=%s"
         cursor.execute(sql, (self.__id,))
-        email = cursor.fetchone()['email']
+        email = cursor.fetchone()["email"]
         sql = "DELETE FROM messages WHERE sender=%s OR receiver=%s"
         cursor.execute(sql, (email, email))
         sql = "DELETE FROM users WHERE id=%s"

@@ -18,10 +18,7 @@
 # FOREIGN KEY(receiver) REFERENCES users(email)
 # );
 
-#insert into messages(title, message, sender, receiver) values('testowa','tralala', 'Janek123@test.pl', 'Januszek@test.pl');
-
-
-
+# insert into messages(title, message, sender, receiver) values('testowa','tralala', 'Janek123@test.pl', 'Januszek@test.pl');
 
 
 class Message:
@@ -31,6 +28,7 @@ class Message:
         self.message = ""
         self.sender = ""
         self.receiver = ""
+
     @property
     def id(self):
         return self.__id
@@ -41,8 +39,9 @@ class Message:
                      VALUES(%s, %s, %s, %s) RETURNING id"""
             values = (self.title, self.message, self.sender, self.receiver)
             cursor.execute(sql, values)
-            self.__id = cursor.fetchone()['id']
+            self.__id = cursor.fetchone()["id"]
             return True
+
     @staticmethod
     def load_received_messages(cursor, receiver):
         sql = """SELECT id, sender, title, message FROM messages where receiver=%s ORDER BY creation_date;"""
@@ -51,9 +50,9 @@ class Message:
         ret = []
         for message in cursor.fetchall():
             loaded_message = Message()
-            loaded_message.__id = message['id']
-            loaded_message.title = message['title']
-            loaded_message.message = message['message']
-            loaded_message.sender = message['sender']
+            loaded_message.__id = message["id"]
+            loaded_message.title = message["title"]
+            loaded_message.message = message["message"]
+            loaded_message.sender = message["sender"]
             ret.append(loaded_message)
         return ret
