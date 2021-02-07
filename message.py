@@ -15,52 +15,57 @@ user = User()
 def get_messages(username, password):
     try:
         hash_u = user.load_users_by_any(cursor, username=username)[0].hashed_password
-        if clcrypto.check_password(password, hash_u):
-            return Message.load_received_messages(cursor, f"{username}@{domain_name}")
-        else:
-            print("Podano błędne haslo")
-
     except IndexError:
         print("Podany user nie istnieje")
+        return None
+
+    if clcrypto.check_password(password, hash_u) is False:
+        print("Podano błędne haslo")
+        return None
+    return Message.load_received_messages(cursor, f"{username}@{domain_name}")
 
 
 def send_message(username, password, receiver, t_message):
-    hash_u = user.load_users_by_any(cursor, username=username)[0].hashed_password
-    if clcrypto.check_password(password, hash_u):
-        if user.load_users_by_any(cursor, email=receiver):
-            if t_message:
-                message = Message()
-                message.title = (
-                    "Brak tematu" if "::" not in t_message else t_message.split("::")[0]
-                )
-                message.message = (
-                    t_message if "::" not in t_message else t_message.split("::")[1]
-                )
-                message.sender = user.load_users_by_any(cursor, username=username)[
-                    0
-                ].email
-                message.receiver = receiver
-                message.save_to_db(cursor)
-                print("Wiadomość wysłana")
-            else:
-                print("Brak wiadomości?")
-        else:
-            print("podany adresat nie instnieje")
-    else:
+    try:
+        hash_u = user.load_users_by_any(cursor, username=username)[0].hashed_password
+    except IndexError:
+        print("Podany user nie istnieje")
+        return None
+
+    if clcrypto.check_password(password, hash_u) is False:
         print("Podano błędne hasło")
+        return None
+
+    if user.load_users_by_any(cursor, email=receiver) == []:
+        print("podany adresat nie instnieje")
+        return None
+
+    if bool(t_message) is False:
+        print("Brak wiadomości?")
+        return None
+
+    message = Message()
+
+    if "::" in t_message:
+        message.title, message.message = t_message.split("::")
+    else:
+        message.title = "Brak tematu"
+        message.message = t_message
+
+    message.sender = user.load_users_by_any(cursor, username=username)[0].email
+    message.receiver = receiver
+    message.save_to_db(cursor)
+    print("Wiadomość wysłana")
 
 
 if __name__ == "__main__":
     if connection is None:
         exit(0)
 
-    try:
-        pairs = clcrypto.slice_args(sys.argv)
-    except KeyError as e:
-        print(e)
-        exit(1)
+    pairs = clcrypto.slice_args(sys.argv)
+    pairs_keys = pairs.keys()
 
-    if len(set(("-u", "-p", "-l")) & set(pairs)) == 3:
+    if all(param in pairs_keys for param in ("-u", "-p", "-l")):
         """ print all messages of user"""
         # python3 message.py -u franek12 -p tajne1234 -l
         username = pairs["-u"]
@@ -71,7 +76,7 @@ if __name__ == "__main__":
             print("treść: ", message.message)
             print("-----------------------------\n\n")
 
-    elif len(set(("-u", "-p", "-t", "-s")) & set(pairs)) == 4:
+    elif all(param in pairs_keys for param in ("-u", "-p", "-t", "-s")):
         """ send message to user """
         # python3 message.py -u franek12 -p tajne1234 -t inny_user@test.pl -s 'temat123::wiadomosc testowa'
         username = pairs["-u"]
