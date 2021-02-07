@@ -12,7 +12,8 @@ import main
     ],
 )
 def test_create_user(username, password):
-    main.create_user(username, password)
+    print(main.create_user(username, password))
+    # assert main.create_user(username, password) is not None
     assert username in main.get_users()
 
 

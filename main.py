@@ -9,33 +9,42 @@ cursor = get_cursor(connection)
 
 
 def create_user(username, password):
-    print("-----------------Tworzymy usera-----------------------")
-    if User.load_users_by_any(cursor, username=username):
+    if User.load_users_by_any(cursor, username=username) != []:
         print("błąd: Taki użytkownik już istnieje ;(")
+        return None
+
     elif clcrypto.check_pass_len(password):
+        print("-----------------Tworzymy usera-----------------------")
         user = User()
         user.username = username
         user.email = f"{username}@{domain_name}"
         user.set_password(password, salt="asdf123")
         user.save_to_db(cursor)
+        return user
+
     else:
         print("Podane hasło zbyt krótkie")
+        return None
 
 
 def change_password(username, old_password, new_password):
     get_user = User.load_users_by_any(cursor, username=username)[0]
-    if get_user:
-        if clcrypto.check_password(old_password, get_user.hashed_password):
-            if clcrypto.check_pass_len(new_password):
-                get_user.set_password(new_password)
-                get_user.save_to_db(cursor)
-                print("hasło zostało zmienione")
-            else:
-                print("Podane hasło jest zbyt słabe")
-        else:
-            print("podsałeś błędne hasło")
-    else:
+
+    if get_user is None:
         print("Nie znaleziono użytkownika")
+        return None
+
+    if clcrypto.check_password(old_password, get_user.hashed_password) is False:
+        print("Podałeś błędne hasło")
+        return None
+
+    if clcrypto.check_pass_len(new_password) is False:
+        print("Podane hasło jest zbyt słabe")
+        return None
+
+    get_user.set_password(new_password)
+    get_user.save_to_db(cursor)
+    print("hasło zostało zmienione")
 
 
 def remove_user(username, password):
@@ -43,13 +52,14 @@ def remove_user(username, password):
         get_user = User.load_users_by_any(cursor, username=username)[0]
     except IndexError:
         print("Podany user nie istnieje")
-        exit(1)
-    if get_user:
-        if clcrypto.check_password(password, get_user.hashed_password):
-            get_user.delete(cursor)
-            print("usunięto usera z bazy")
-        else:
-            print("błędne hasło")
+        return None
+
+    if clcrypto.check_password(password, get_user.hashed_password) is False:
+        print("błędne hasło")
+        return None
+
+    get_user.delete(cursor)
+    print("usunięto usera z bazy")
 
 
 def get_users():
@@ -62,18 +72,9 @@ if __name__ == "__main__":
         exit(0)
 
     pairs = clcrypto.slice_args(sys.argv)
+    pairs_keys = pairs.keys()
 
-    if (
-        len(set(("-u", "-p")) & set(pairs)) == 2
-        and len(set(("-e", "-d")) & set(pairs)) < 1
-    ):
-        """ create user"""
-        # python3 main.py -u franek12 -p tajne123
-        username = pairs["-u"]
-        password = pairs["-p"]
-        create_user(username, password)
-
-    elif len(set(("-u", "-p", "-e", "-n")) & set(pairs)) == 4:
+    if all(param in pairs_keys for param in ("-u", "-p", "-e", "-n")):
         """ change password"""
         # python3 main.py -u franek12 -p tajne123 -e -n tajne1234
         username = pairs["-u"]
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         new_password = pairs["-n"]
         change_password(username, password, new_password)
 
-    elif len(set(("-u", "-p", "-d")) & set(pairs)) == 3:
+    elif all(param in pairs_keys for param in ("-u", "-p", "-d")):
         """remove user from db"""
         # python3 main.py -u franek12 -p tajne1234 -d
         username = pairs["-u"]
@@ -89,7 +90,14 @@ if __name__ == "__main__":
 
         remove_user(username, password)
 
-    elif set(("-l",)) == set(pairs):
+    elif all(param in pairs_keys for param in ("-u", "-p")):
+        """ create user"""
+        # python3 main.py -u franek12 -p tajne123
+        username = pairs["-u"]
+        password = pairs["-p"]
+        create_user(username, password)
+
+    elif all(param in pairs_keys for param in ("-l")):
         """ print all users """
         print("\n".join(get_users()))
 

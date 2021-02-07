@@ -2,23 +2,29 @@ import os
 import psycopg2
 
 from configparser import ConfigParser
-from database import user, password, db_name
+
+username = "postgres"
+password = "postgres"
+db_name = "mailserver"
+db_server = "db"
+domain = "test.pl"
 
 current_file = os.path.realpath(__file__)
 script_dir = os.path.dirname(current_file)
-# user = input("Podaj nazwę urzytkownika dostępu do psql: ")
+# username = input("Podaj nazwę urzytkownika dostępu do psql: ")
 # password = input("Podaj hasło usera {} do psql: ".format(user))
 # db_name = input("Podaj nazwę bazy danych jaką chcesz utworzyć dla programu: ")
 
 print("1. Przechodze do katalogu\n [#     ] ")
 os.chdir(script_dir)
-print("2. Tworzenie venv\n [##    ] ")
-os.system("virtualenv -p python3 env")
+# print("2. Tworzenie venv\n [##    ] ")
+# os.system("virtualenv -p python3 env")
+# os.system("source /env/bin/activate")
 print("3. Instalacja zależności\n [##   ] ")
 os.system("pip3 install -r requirements.txt")
 print("4. Tworzenie bazy danych\n [###  ] ")
 
-con = psycopg2.connect(user=user, password=password, host="db")
+con = psycopg2.connect(user=username, password=password, host=db_server)
 con.autocommit = True
 cur = con.cursor()
 try:
@@ -28,7 +34,7 @@ except Exception:
 cur.execute("CREATE DATABASE {};".format(db_name))
 con.close()
 print("5. Tworzenie tabelek w bazie\n [##### ] ")
-con = psycopg2.connect(user=user, password=password, dbname=db_name, host="db")
+con = psycopg2.connect(user=username, password=password, dbname=db_name, host=db_server)
 con.autocommit = True
 cur = con.cursor()
 cur.execute(
@@ -65,10 +71,13 @@ os.chdir("database")
 
 config = ConfigParser()
 config["db"] = {
-    "username": user,
+    "username": username,
     "password": password,
-    "name": db_name,
+    "db_name": db_name,
+    "db_server": db_server,
+    "domain": domain,
 }
+
 with open("config.ini", "w") as file:
     config.write(file)
 print("---------------------\nINSTALACJA ZAKOŃCZONA POWODZENIEM! \\o/")

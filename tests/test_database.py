@@ -7,7 +7,7 @@ from database import (
     user,
     password,
     db_name,
-    server_name,
+    db_server,
 )
 
 
@@ -20,8 +20,8 @@ def test_variables():
     assert type(db_name) == str
     assert len(db_name) > 1
 
-    assert type(server_name) == str
-    assert len(server_name) >= 2
+    assert type(db_server) == str
+    assert len(db_server) >= 2
 
     assert type(domain_name) == str
     assert len(domain_name) > 2
