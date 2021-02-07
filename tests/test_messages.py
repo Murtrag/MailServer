@@ -1,5 +1,5 @@
 import pytest
-import main
+import users
 import message
 from database import domain_name
 
@@ -8,13 +8,13 @@ user_2 = ["test2_1234", "pass12345"]
 
 
 def setup_module(module):
-    main.create_user(*user_1)
-    main.create_user(*user_2)
+    users.create_user(*user_1)
+    users.create_user(*user_2)
 
 
 def teardown_module(module):
-    main.remove_user(*user_1)
-    main.remove_user(*user_2)
+    users.remove_user(*user_1)
+    users.remove_user(*user_2)
 
 
 @pytest.mark.messages
