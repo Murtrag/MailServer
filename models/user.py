@@ -65,13 +65,20 @@ class User:
         return ret
 
     @staticmethod
-    def load_users_by_any(cursor, **kwargs):
-        all_users = User.load_all_users(cursor)
-        return [
-            user
-            for user in all_users
-            if getattr(user, list(kwargs.keys())[0]) == list(kwargs.values())[0]
-        ]
+    # def load_users_by_any(cursor, **kwargs):
+    def filter(cursor, **kwargs):
+        sql = """SELECT * FROM users ORDER BY username;"""
+        cursor.execute(sql)
+        ret = []
+        for user in cursor.fetchall():
+            if user[[*kwargs.keys()][0]] == [*kwargs.values()][0]:
+                loaded_user = User()
+                loaded_user.__id = user["id"]
+                loaded_user.username = user["username"]
+                loaded_user.__hashed_password = user["hashed_password"]
+                loaded_user.email = user["email"]
+                ret.append(loaded_user)
+        return ret
 
     def delete(self, cursor):
         sql = "SELECT email FROM users WHERE id=%s"

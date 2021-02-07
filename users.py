@@ -9,7 +9,7 @@ cursor = get_cursor(connection)
 
 
 def create_user(username, password):
-    if User.load_users_by_any(cursor, username=username) != []:
+    if User.filter(cursor, username=username) != []:
         print("błąd: Taki użytkownik już istnieje ;(")
         return None
 
@@ -28,7 +28,7 @@ def create_user(username, password):
 
 
 def change_password(username, old_password, new_password):
-    get_user = User.load_users_by_any(cursor, username=username)[0]
+    get_user = User.filter(cursor, username=username)[0]
 
     if get_user is None:
         print("Nie znaleziono użytkownika")
@@ -49,7 +49,7 @@ def change_password(username, old_password, new_password):
 
 def remove_user(username, password):
     try:
-        get_user = User.load_users_by_any(cursor, username=username)[0]
+        get_user = User.filter(cursor, username=username)[0]
     except IndexError:
         print("Podany user nie istnieje")
         return None

@@ -14,7 +14,7 @@ user = User()
 
 def get_messages(username, password):
     try:
-        hash_u = user.load_users_by_any(cursor, username=username)[0].hashed_password
+        hash_u = user.filter(cursor, username=username)[0].hashed_password
     except IndexError:
         print("Podany user nie istnieje")
         return None
@@ -27,7 +27,7 @@ def get_messages(username, password):
 
 def send_message(username, password, receiver, t_message):
     try:
-        hash_u = user.load_users_by_any(cursor, username=username)[0].hashed_password
+        hash_u = user.filter(cursor, username=username)[0].hashed_password
     except IndexError:
         print("Podany user nie istnieje")
         return None
@@ -36,7 +36,7 @@ def send_message(username, password, receiver, t_message):
         print("Podano błędne hasło")
         return None
 
-    if user.load_users_by_any(cursor, email=receiver) == []:
+    if user.filter(cursor, email=receiver) == []:
         print("podany adresat nie instnieje")
         return None
 
@@ -52,7 +52,7 @@ def send_message(username, password, receiver, t_message):
         message.title = "Brak tematu"
         message.message = t_message
 
-    message.sender = user.load_users_by_any(cursor, username=username)[0].email
+    message.sender = user.filter(cursor, username=username)[0].email
     message.receiver = receiver
     message.save_to_db(cursor)
     print("Wiadomość wysłana")
