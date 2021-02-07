@@ -17,8 +17,6 @@ def generate_salt():
     """
     salt = ""
     for i in range(0, 16):
-
-        # get a random element from the iterable
         salt += random.choice(ALPHABET)
     return salt
 
@@ -32,8 +30,7 @@ def password_hash(password, salt=None):
     """
 
     # generate salt if not provided
-    if salt is None:
-        salt = generate_salt()
+    salt = generate_salt() if salt is None else salt
 
     # fill to 16 chars if too short
     if len(salt) < 16:
@@ -75,10 +72,7 @@ def check_password(pass_to_check, hashed):
     new_hash = password_hash(pass_to_check, salt)
 
     # compare hashes. If equal, return True
-    if new_hash[16:] == hash_to_check:
-        return True
-    else:
-        return False
+    return new_hash[16:] == hash_to_check
 
 
 def check_pass_len(pass_to_check):

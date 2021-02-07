@@ -18,7 +18,8 @@ def get_connection():
         cnx.autocommit = True
         return cnx
     except OperationalError as error:
-        print(error)
+        print("Connection error: ", error)
+        return None
 
 
 def get_cursor(connection):

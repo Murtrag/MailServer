@@ -51,6 +51,9 @@ def send_message(username, password, receiver, t_message):
 
 
 if __name__ == "__main__":
+    if connection is None:
+        exit(0)
+
     try:
         pairs = clcrypto.slice_args(sys.argv)
     except KeyError as e:
