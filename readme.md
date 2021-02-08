@@ -25,24 +25,30 @@ docker exec -it mailserver_app bash
 ## Usage
 ### Users
 ./main.py -u user -p password
+
 Creates a new user.
 
 ./main.py -u user -p password -e -n new_password
+
 Changes user's password
 
 ./main.py -u user -p password -d
+
 Deletes user from database.
 
 ### Messages
 ./message.py -u login -p password -l
+
 Displays all user's messages
 
 ./message.py -u login -p password -t another_user@domain.com -s 'topic::message to send'
+
 Sends message to another user
 
 ## Development Tips
 Run tests:
-# python3 -m pytest
+'# python3 -m pytest'
+
 Tests should be run inside of the container because of the connection with the db
 marks:
 - connection
