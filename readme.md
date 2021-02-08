@@ -62,7 +62,8 @@ Run tests:
 ```
 
 Tests should be run inside of the container because of the connection with the db
-marks:
+
+markers:
 - connection
 - user
 - messages
