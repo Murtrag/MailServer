@@ -82,4 +82,6 @@ config["db"] = {
 
 with open("config.ini", "w") as file:
     config.write(file)
+os.chdir("..")
+os.system("chmod 775 users.py message.py")
 print("---------------------\n INSTALATION WENT SUCCESSFULLY \\o/")
